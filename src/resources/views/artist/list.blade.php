@@ -20,7 +20,13 @@
                     <tr>
                         <td>{{ $artist->id }}</td>
                         <td>{{ $artist->name }}</td>
-                        <td>Labot / Dzēst</td>
+                        <td><a href="/artists/update/{{ $artist->id }}" class="btn btn-outline-primary btn-sm">Labot</a>
+                            /
+                            <form action="/artists/delete/{{ $artist->id }}" method="post" class="deletion-form d-inline">
+                                @csrf
+                                <button type="submit" class="btn btn-outline-danger btn-sm">Dzēst</button>
+                            </form>
+                        </td>
                     </tr>
                 @endforeach
 
@@ -31,6 +37,7 @@
 
         <p>Nav atrasts neviens ieraksts</p>
 
-    @endif
 
+    @endif
+    <a href="/artists/create" class="btn btn-primary">Izveidot jaunu</a>
 @endsection
