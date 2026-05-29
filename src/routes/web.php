@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ArtistController;
+use app\Http\Controllers\AuthController;
+use App\Http\Controllers;
 
 Route::get('/', [HomeController::class, 'index']);
 
@@ -13,3 +15,6 @@ Route::post('/artists/put', [ArtistController::class, 'put']);
 Route::get('/artists/update/{artist}', [ArtistController::class, 'update']);
 Route::post('/artists/patch/{artist}', [ArtistController::class, 'patch']);
 Route::post('/artists/delete/{artist}', [ArtistController::class, 'delete']);
+Route :: get ( '/login' , [ AuthController :: class , 'login' ])->name( 'login' ); 
+Route :: post ( '/auth' , [ AuthController :: class , 'authenticate' ]); 
+Route :: get ( '/logout' , [ AuthController :: class , 'logout' ]); 
