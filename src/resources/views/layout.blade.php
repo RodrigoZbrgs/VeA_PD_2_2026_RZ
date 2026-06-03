@@ -25,8 +25,26 @@
                     <li class="nav-item">
                         <a class="nav-link" href="/">Homepage</a>
                     </li>
+
+                    @if(Auth::check())
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="/artists">Artists</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="/logout">Beigt darbu </a>
+                        </li>
+
+                    @else
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="/login">Autentificēties </a>
+                        </li>
+
+                    @endif
                     <li class="nav-item">
-                        <a class="nav-link" href="/artists">Artists</a>
+                        <a class="nav-link" href="/albums">Albumi</a>
                     </li>
                 </ul>
             </div>
@@ -39,7 +57,7 @@
 
                     @yield('content')
 
-            </div>
+                </div>
             </div>
         </main>
 

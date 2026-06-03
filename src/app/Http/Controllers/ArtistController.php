@@ -3,11 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Artist;
+use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
-class ArtistController extends Controller
+class ArtistController extends Controller implements HasMiddleware
 {
     // display all Artists
     public function list(): View
@@ -81,4 +82,10 @@ class ArtistController extends Controller
         return redirect('/artists');
     }
 
+    public static function middleware(): array
+{
+    return [
+        'auth',
+    ];
+}
 }
