@@ -46,26 +46,76 @@ class AlbumController extends Controller implements HasMiddleware
         );
     }
 
-    public function put (Request $request ): RedirectResponse 
-{ 
-    $validatedData = $request->validate ([ 
-        'name' => 'required|min:3|max:256' , 
-        'artist_id' => 'required' , 
-        'streams' => 'nullable|numeric' , 
-        'year' => 'numeric' , 
-        'image' => 'nullable|image' , 
-        'display' => 'nullable' , 
-    ]); 
- 
-    $album = new Artist(); 
-    $album->name = $validatedData [ 'name' ]; 
-    $album->artist_id = $validatedData [ 'artist_id' ]; 
-    $album->streams = $validatedData [ 'streams' ]; 
-    $album->year = $validatedData [ 'year' ]; 
-    $album->display = ( bool ) ( $validatedData [ 'display' ] ?? false ); 
-    $album->save (); 
- 
-    return redirect ( '/albums' ); 
-} 
+    public function put(Request $request): RedirectResponse
+    {
+        $validatedData = $request->validate([
+            'name' => 'required|min:3|max:256',
+            'artist_id' => 'required',
+            'streams' => 'nullable|numeric',
+            'year' => 'numeric',
+            'image' => 'nullable|image',
+            'display' => 'nullable',
+        ]);
 
+        $album = new Album();
+        $album->name = $validatedData['name'];
+        $album->artist_id = $validatedData['artist_id'];
+        $album->streams = $validatedData['streams'];
+        $album->year = $validatedData['year'];
+        $album->display = (bool) ($validatedData['display'] ?? false);
+        $album->save();
+
+        return redirect('/albums');
+    }
+    public function update(Album $album): View
+    {
+        $artists = Artist::orderBy('name', 'asc')->get();
+
+        return view(
+            'album.form',
+            [
+                'title' => 'Rediģēt albumu',
+                'album' => $album,
+                'artists' => $artists,
+            ]
+        );
+    }
+
+    // update Book data 
+    public function patch(Album $album, Request $request): RedirectResponse
+    {
+        $validatedData = $request->validate([
+            'name' => 'required|min:3|max:256',
+            'artist_id' => 'required',
+            'streams' => 'nullable|numeric',
+            'year' => 'numeric',
+            'image' => 'nullable|image',
+            'display' => 'nullable',
+        ]);
+
+        $album->name = $validatedData['name'];
+        $album->artist_id = $validatedData['artist_id'];
+        $album->streams = $validatedData['streams'];
+        $album->year = $validatedData['year'];
+        $album->display = (bool) ($validatedData['display'] ?? false);
+        if ($request->hasFile('image')) {
+            // šeit varat pievienot kodu, kas nodzēš veco bildi, ja pievieno jaunu 
+            $uploadedFile = $request->file('image');
+            $extension = $uploadedFile->clientExtension();
+            $name = uniqid();
+            $album->image = $uploadedFile->storePubliclyAs('/', $name . '.' . $extension, 'uploads');
+        }
+        $album->save();
+
+        return redirect('/albums/update/' . $album->id);
+    }
+
+    public function delete(Album $album): RedirectResponse
+    {
+        if ($album->image) {
+            unlink(getcwd() . '/images/' . $album->image);
+        }
+        $album->delete();
+        return redirect('/albums');
+    }
 }
