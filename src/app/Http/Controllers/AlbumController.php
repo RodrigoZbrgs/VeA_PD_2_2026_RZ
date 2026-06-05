@@ -39,6 +39,56 @@ class AlbumController extends Controller
 
         $album->save();
     }
+    public function update(Album $album): View
+    {
+        $artists = Artist::orderBy('name', 'asc')->get();
+
+        return view(
+            'album.form',
+            [
+                'title' => 'Rediģēt albumu',
+                'album' => $album,
+                'artists' => $artists,
+            ]
+        );
+        
+    }
+
+    public function delete(Album $album): RedirectResponse
+    {
+        if ($album->image) {
+            unlink(getcwd() . '/images/' . $album->image);
+        }
+        $album->delete();
+        return redirect('/albums');
+    }
+
+    public function list(): View
+    {
+        $items = Album::orderBy('name', 'asc')->get();
+
+        return view(
+            'album.list',
+            [
+                'title' => 'Albumi',
+                'items' => $items
+            ]
+        );
+    }
+
+    public function create(): View
+    {
+        $artists = Artist::orderBy('name', 'asc')->get();
+
+        return view(
+            'album.form',
+            [
+                'title' => 'Pievienot albumu',
+                'album' => new Album(),
+                'artists' => $artists,
+            ]
+        );
+    }
 
     public function put(AlbumRequest $request): RedirectResponse
     {
