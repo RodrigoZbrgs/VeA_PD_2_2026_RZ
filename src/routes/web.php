@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\GenreController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers;
 use App\Http\Controllers\HomeController;
@@ -35,3 +36,11 @@ Route :: post ( '/albums/delete/{album}' , [ AlbumController :: class , 'delete'
 Route::get('/data/get-top-albums', [DataController::class, 'getTopAlbums']);
 Route::get('/data/get-album/{album}', [DataController::class, 'getAlbum']);
 Route::get('/data/get-related-albums/{album}', [DataController::class, 'getRelatedAlbums']);
+
+//GENRE
+Route::get('/genres', [GenreController::class,'list']);
+Route::get('/genres/create', [GenreController::class, 'create']);
+Route::post('/genres/put', [GenreController::class, 'put']);
+Route::get('/genres/update/{genre}', [GenreController::class, 'update']);
+Route::post('/genres/patch/{genre}', [GenreController::class, 'patch']);
+Route::post('/genres/delete/{genre}', [GenreController::class, 'delete']);

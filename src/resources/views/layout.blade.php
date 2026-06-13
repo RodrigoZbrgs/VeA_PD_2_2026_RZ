@@ -12,7 +12,7 @@
 </head>
 
 <body>
-    <<nav class="navbar navbar-expand-md bg-primary mb-3" data-bs-theme="dark">
+    <nav class="navbar navbar-expand-md bg-primary mb-3" data-bs-theme="dark">
         <div class="container">
             <span class="navbar-brand mb-0 h1">2. Projekts</span>
 
@@ -34,6 +34,10 @@
 
                         <li class="nav-item">
                             <a class="nav-link" href="/albums">Albumi</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="/genres">Žanras</a>
                         </li>
 
                         <li class="nav-item">
