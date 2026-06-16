@@ -7,15 +7,16 @@ use Illuminate\Http\JsonResponse;
 
 class DataController extends Controller
 {
-   // Return 3 published Albums in random order
+    // Return 3 published Albums in random order
     public function getTopAlbums(): JsonResponse
     {
         $albums = Album::where('display', true)
+            ->with('genre', 'artist')
             ->inRandomOrder()
             ->take(3)
             ->get();
 
-        return response()->json($albums);
+        return response()->json($albums->map->jsonSerialize()->values());
     }
 
     // Return selected Album if it's published
@@ -25,9 +26,10 @@ class DataController extends Controller
             'id' => $album->id,
             'display' => true,
         ])
+            ->with('genre', 'artist')
             ->firstOrFail();
 
-        return response()->json($selectedAlbum);
+        return response()->json($selectedAlbum->jsonSerialize());
     }
 
     // Return 3 published Albums in random order- except the selected Album
@@ -35,10 +37,11 @@ class DataController extends Controller
     {
         $albums = Album::where('display', true)
             ->where('id', '<>', $album->id)
+            ->with('genre', 'artist')
             ->inRandomOrder()
             ->take(3)
             ->get();
 
-        return response()->json($albums);
+        return response()->json($albums->map->jsonSerialize()->values());
     }
 }
