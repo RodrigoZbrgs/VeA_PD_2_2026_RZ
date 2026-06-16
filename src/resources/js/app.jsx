@@ -16,7 +16,7 @@ export default function App() {
     return (
         <>
             <Header />
-            <main className="mb-8 px-2 md:container md:mx-auto" >
+            <main className="mb-8 px-2 md:container md:mx-auto bg-gray-100 min-h-screen">
                 {
                     selectedAlbumID
                         ? <AlbumPage
@@ -25,7 +25,6 @@ export default function App() {
                             handleGoingBack={handleGoingBack}
                         />
                         : <Homepage handleAlbumSelection={handleAlbumSelection} />
-
                 }
             </main>
             <Footer />
@@ -281,9 +280,8 @@ function Homepage({ handleAlbumSelection }) {
 // Galvene un kājene – strukturālas komponentes bez funkcijām vai datiem 
 function Header() {
     return (
-        <header className="bg-green-500 mb-8 py-2 sticky top-0">
-            <div className="px-2 py-2 font-serif text-green-50 text-xl 
-leading-6 md:container md:mx-auto" >
+        <header className="bg-black mb-8 py-2 sticky top-0">
+            <div className="px-2 py-2 font-serif text-green-500 text-xl leading-6 md:container md:mx-auto">
                 Musicfy &#127929;
             </div>
         </header>
@@ -292,8 +290,8 @@ leading-6 md:container md:mx-auto" >
 
 function Footer() {
     return (
-        <footer className="bg-neutral-300 mt-8">
-            <div className="py-8 md:container md:mx-auto px-2">
+        <footer className="bg-black mt-8">
+            <div className="py-8 md:container md:mx-auto px-2 text-green-500">
                 R.Zandbergs, VeA, 2026
             </div>
         </footer>
@@ -323,8 +321,8 @@ function GoBackBtn({ handleGoingBack }) {
 // Ielādes indikators un kļūdas
 function Loader() {
     return (
-        <div className="my-12 px-2 md:container md:mx-auto text-center clear-both">
-            <span class="loader"></span>
+        <div className="fixed inset-0 flex items-center justify-center">
+            <span className="loader"></span>
         </div>
     )
 }
