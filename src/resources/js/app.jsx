@@ -1,13 +1,217 @@
+
+import '../css/loader.css'
+import { useEffect, useState } from "react";
+
 export default function App() { 
+    const [selectedAlbumID, setSelectedAlbumID] = useState(null);
+    // funkcija Album ID saglabāšanai stāvoklī
+    function handleAlbumSelection(albumID) {
+        setSelectedAlbumID(albumID);
+    }
+
+    // funkcija grāmatas izvēles atcelšanai
+    function handleGoingBack() {
+        setSelectedAlbumID(null);
+    }
+
     return ( 
         <> 
             <Header /> 
             <main className ="mb-8 px-2 md:container md:mx-auto" > 
-                <h1>Hello, World! </h1> 
+                {
+                selectedAlbumID
+                ? <AlbumPage
+                selectedAlbumID={selectedAlbumID}
+                handleAlbumSelection={handleAlbumSelection}
+                handleGoingBack={handleGoingBack}
+                 />
+               : <Homepage handleAlbumSelection={handleAlbumSelection} />
+                
+            }
             </main> 
             <Footer /> 
         </> 
     ) 
+}
+// Grāmatas lapa – strukturāla komponente, kas satur grāmatas lapas daļas
+function AlbumPage({ selectedAlbumID, handleAlbumSelection, handleGoingBack }) {
+    return (
+        <>
+            <SelectedAlbumView
+                selectedAlbumID={selectedAlbumID}
+                handleGoingBack={handleGoingBack}
+            />
+            <RelatedAlbumSection
+                selectedAlbumID={selectedAlbumID}
+                handleAlbumSelection={handleAlbumSelection}
+            />
+        </>
+    )
+}
+
+function RelatedAlbumSection({ selectedAlbumID, handleAlbumSelection }) {
+    return (
+        <>
+            <div className="flex flex-wrap">
+                <h2 className="text-3xl leading-8 font-light text-neutral-900 mb-4">
+                    Līdzīgi albumi
+                </h2>
+            </div>
+            <div className="flex flex-wrap md:flex-row md:space-x-4 md:flex-nowrap">
+                {RelatedAlbums.map( Album => (
+                    <RelatedAlbumView
+                        Album={Album}
+                        key={Album.id}
+                        handleAlbumSelection={handleAlbumSelection}
+                    />
+                ))}
+            </div>
+        </>
+    )
+}
+
+// Top grāmatas skats- attēlo sākumlapas grāmatas
+function TopAlbumView({ album, index, handleAlbumSelection }) {
+    return (
+        <div className="bg-neutral-100 rounded-lg mb-8 py-8 flex flex-wrap md:flex-row">
+            <div className=
+                {`order-2 px-12 md:basis-1/2
+                    ${ index % 2 === 1 ? "md:order-1 md:text-right" : ""}
+                `}
+            >
+                <h2 className="mb-4 text-3xl leading-8 font-light text-neutral-900">
+                    {album.name}
+                </h2>
+                <SeeMoreBtn
+                    albumID={album.id}
+                    handleAlbumSelection={handleAlbumSelection}
+                />
+            </div>
+            <div className=
+                {`order-1 md:basis-1/2 ${ index % 2 === 1 ? "md:order-2" : ""}`}
+            >
+                <img
+                    src={ album.image }
+                    alt={ album.name }
+                    className="p-1 rounded-md border border-neutral-200 w-2/4 aspect-auto mx-auto" />
+            </div>
+        </div>
+    )
+}
+
+function SelectedAlbumView({ selectedAlbumID, handleGoingBack }) {
+    return (
+        <>
+            <div className="rounded-lg flex flex-wrap md:flex-row">
+                <div className="order-2 md:order-1 md:pt-12 md:basis-1/2">
+                    <h1 className="text-3xl leading-8 font-light text-neutral-900 mb-2">
+                        {SelectedAlbum.name}
+                    </h1>
+                    <p className="text-xl leading-7 font-light text-neutral-900 mb-2">
+                        {SelectedAlbum.artist}
+                    </p>
+                    <dl className="mb-4 md:flex md:flex-wrap md:flex-row">
+                        <dt className="font-bold md:basis-1/4">
+                            Izdošanas gads
+                        </dt>
+                        <dd className="mb-2 md:basis-3/4">
+                            {SelectedAlbum.year}
+                        </dd>
+
+                        <dt className="font-bold md:basis-1/4">
+                            Straumejumi
+                        </dt>
+                        <dd className="mb-2 md:basis-3/4">
+                             {SelectedAlbum.streams}
+                        </dd>
+
+                        <dt className="font-bold md:basis-1/4">
+                            Žanrs
+                        </dt>
+                        <dd className="mb-2 md:basis-3/4">
+                            {SelectedAlbum.genre}
+                        </dd>
+                    </dl>
+                </div>
+                <div className="order-1 md:order-2 md:pt-12 md:px-12 md:basis-1/2">
+                    <img
+                        src={SelectedAlbum.image}
+                        alt={SelectedAlbum.name}
+                        className="p-1 rounded-md border border-neutral-200 mx-auto" />
+                </div>
+            </div>
+            <div className="mb-12 flex flex-wrap">
+                <GoBackBtn handleGoingBack={handleGoingBack} />
+            </div>
+        </>
+    )
+}
+
+// Līdzīgās grāmatas skats
+function RelatedAlbumView({ Album, handleAlbumSelection }) {
+    return (
+        <div className="rounded-lg mb-4 md:basis-1/3">
+            <img
+                src={ Album.image }
+                alt={ Album.name }
+                className="md:h-[400px] md:mx-auto max-md:w-2/4 max-md:mx-auto" />
+            <div className="p-4">
+                <h3 className="text-xl leading-7 font-light text-neutral-900 mb-4">
+                    { Album.name }
+                </h3>
+                <SeeMoreBtn
+                    AlbumID={Album.id}
+                    handleAlbumSelection={handleAlbumSelection}
+                />
+            </div>
+        </div>
+    )
+}
+
+
+
+// Sākumlapa- ielādē datus no API un attēlo top grāmatas
+function Homepage({ handleAlbumSelection }) {
+    const [TopAlbums, setTopAlbums] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
+
+    useEffect(function () {
+        async function fetchTopAlbums() {
+
+            try {
+                setIsLoading(true);
+                const response = await fetch('http://localhost/data/get-top-albums');
+                const data = await response.json();
+                console.log('top albums fetched', data);
+                setTopAlbums(data);
+            } catch (error) {
+                //
+            } finally {
+                setIsLoading(false);
+            }
+        }
+
+        fetchTopAlbums();
+    }, []);
+
+
+    return (
+        <>
+            {isLoading && <Loader /> }
+            {!isLoading && (TopAlbums.map((album, index) => (
+                <TopAlbumView
+                    album={album}
+                    key={album.id}
+                    index={index}
+                    handleAlbumSelection={handleAlbumSelection}
+                />
+            )))}
+        </>
+    )
+}
+
+
+
 
 
 // Galvene un kājene – strukturālas komponentes bez funkcijām vai datiem 
@@ -32,4 +236,39 @@ function Footer () {
     ) 
 } 
 
+// Poga “Rādīt vairāk”
+function SeeMoreBtn({ albumID, handleAlbumSelection }) {
+    return (
+        <button
+            className="inline-block rounded-full py-2 px-4 bg-sky-500 hover:bg-sky-400 text-sky-50 cursor-pointer"
+            onClick={() => handleAlbumSelection(albumID)}
+        >Rādīt vairāk</button>
+    )
+}
+
+// Poga “Uz sākumu”
+function GoBackBtn({ handleGoingBack }) {
+    return (
+        <button
+            className="inline-block rounded-full py-2 px-4 bg-neutral-500 hover:bg-neutral-400 text-neutral-50 cursor-pointer"
+            onClick={handleGoingBack}
+        >Uz sākumu</button>
+    )
+}
+
+// Ielādes indikators un kļūdas
+function Loader() {
+    return (
+        <div className="my-12 px-2 md:container md:mx-auto text-center clear-both">
+            <span class="loader"></span>
+        </div>
+    )
+}
+
+function ErrorMessage({ msg }) {
+    return (
+        <div className="md:container md:mx-auto bg-red-300 my-8 p-2">
+            <p className="text-black">{ msg }</p>
+        </div>
+    )
 }
